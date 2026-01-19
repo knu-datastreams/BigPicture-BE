@@ -42,3 +42,5 @@ src/test/resources/application-test.properties
 src/main/resources/firebase/
 
 .DS_Store
+
+.env
