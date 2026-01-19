@@ -9,43 +9,43 @@ import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import static datastreams_knu.bigpicture.common.util.TickerParserPrompt.TICKER_PARSER_PROMPT;
 
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 @Component
+@Slf4j
 public class TickerParser {
 
-    private final AiModelConfig aiModelConfig;
-    private final ObjectMapper objectMapper;
+//    private final AiModelConfig aiModelConfig;
+//    private final ObjectMapper objectMapper;
 
-    private ChatLanguageModel model;
+//    private ChatLanguageModel model;
 
-    @PostConstruct
-    public void init() {
-        this.model = aiModelConfig.openAiChatModel();
-    }
+//    @PostConstruct
+//    public void init() {
+//        this.model = aiModelConfig.openAiChatModel();
+//    }
 
-    public String parseTicker(String ticker) {
-        try {
-            UserMessage prompt = createPrompt(ticker);
+    public String parseTicker(String keyword) {
+        log.info("TickerParser: AI Bypass - Using raw keyword: {}", keyword);
 
-            String response = model.chat(prompt).aiMessage().text();
-
-            RecommendedKeywordDto recommendedKeywordDto = objectMapper.readValue(response, RecommendedKeywordDto.class);
-            return recommendedKeywordDto.getKeyword();
-        } catch (JsonProcessingException e) {
-            throw new ObjectMapperException("Json 파싱 중 예외가 발생하였습니다.", e);
+        // OpenAI한테 물어보지 말고, 들어온 글자 그대로 대문자로 바꿔서 반환
+        if (keyword == null) {
+            return "";
         }
+        return keyword.trim().toUpperCase();
     }
 
-    private UserMessage createPrompt(String ticker) {
-        String basePrompt = TICKER_PARSER_PROMPT;
 
-        String prompt = basePrompt.formatted(ticker);
-
-        UserMessage userMessage = new UserMessage(prompt);
-        return userMessage;
-    }
+//    private UserMessage createPrompt(String ticker) {
+//        String basePrompt = TICKER_PARSER_PROMPT;
+//
+//        String prompt = basePrompt.formatted(ticker);
+//
+//        UserMessage userMessage = new UserMessage(prompt);
+//        return userMessage;
+//    }
 }
